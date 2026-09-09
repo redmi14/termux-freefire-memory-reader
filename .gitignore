@@ -1,0 +1,44 @@
+# .gitignore for Free Fire Memory Reader
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Dumps and temp files
+dumps/
+*.bin
+*.dump
+*.tmp
+
+# User data
+.freefire_reader/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.venv
