@@ -1,44 +1,18 @@
-# .gitignore for Free Fire Memory Reader
+# Contributing
 
-# Dependencies
-node_modules/
-__pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-.Python
+Thanks for helping improve this project.
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
+## Workflow
 
-# Logs
-*.log
-logs/
+1. Fork the repository
+2. Create a branch for your change
+3. Keep changes focused and clear
+4. Validate shell scripts with `bash tests/validate.sh`
+5. Open a pull request with a clear summary
 
-# Dumps and temp files
-dumps/
-*.bin
-*.dump
-*.tmp
+## Notes
 
-# User data
-.freefire_reader/
+- This project targets Termux and Frida workflows.
+- Be careful with game-related tooling and follow local laws and policies.
+- Prefer small, tested improvements.
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Build
-build/
-dist/
-*.egg-info/
-
-# Virtual environments
-venv/
-env/
-.venv

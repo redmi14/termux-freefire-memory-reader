@@ -1,49 +1,82 @@
 #!/bin/bash
 
-################################################################################
-# Free Fire Memory Reader - Installation Script
-################################################################################
+set -uo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/config.sh"
+source "${SCRIPT_DIR}/core/common.sh"
 
-echo "[+] Free Fire Memory Reader Installation"
-echo ""
+ensure_dirs
 
-# Colors
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m'
+show_tui() {
+    clear
+    printf '%b\n' "${CYAN}╔══════════════════════════════════════════════╗${NC}"
+    printf '%b' "${CYAN}║${NC} "
+    printf '%b' "${GREEN}Free Fire Memory Reader - TUI${NC}"
+    printf '%b\n' "${CYAN} ║${NC}"
+    printf '%b\n' "${CYAN}╚══════════════════════════════════════════════╝${NC}"
+    printf '%b\n' "${BLUE}1) Status\n2) Processes\n3) Scanner\n4) Dumper\n5) Hooker\n6) Logs\n7) Clean\n8) Back to main menu\n9) Exit${NC}"
+    printf '\n'
+}
 
-# Check if running in Termux
-if [ ! -d "$PREFIX" ]; then
-    echo -e "${RED}[!] This script must be run in Termux${NC}"
-    exit 1
-fi
+run_from_tui() {
+    while true; do
+        show_tui
+        read -r -p "Choice [1-9]: " choice
+        case "$choice" in
+            1)
+                show_status
+                read -r -p "Press Enter to continue..." _
+                ;;
+            2)
+                list_running_processes
+                read -r -p "Press Enter to continue..." _
+                ;;
+            3)
+                if ! ensure_dependencies; then
+                    read -r -p "Press Enter to continue..." _
+                    continue
+                fi
+                "$SCRIPT_DIR/freefire_reader.sh" scanner
+                read -r -p "Press Enter to continue..." _
+                ;;
+            4)
+                if ! ensure_dependencies; then
+                    read -r -p "Press Enter to continue..." _
+                    continue
+                fi
+                "$SCRIPT_DIR/freefire_reader.sh" dumper
+                read -r -p "Press Enter to continue..." _
+                ;;
+            5)
+                if ! ensure_dependencies; then
+                    read -r -p "Press Enter to continue..." _
+                    continue
+                fi
+                "$SCRIPT_DIR/freefire_reader.sh" hooker
+                read -r -p "Press Enter to continue..." _
+                ;;
+            6)
+                view_logs
+                read -r -p "Press Enter to continue..." _
+                ;;
+            7)
+                clean_cache
+                read -r -p "Press Enter to continue..." _
+                ;;
+            8)
+                exec "$SCRIPT_DIR/freefire_reader.sh" menu
+                ;;
+            9)
+                success "Exiting TUI"
+                exit 0
+                ;;
+            *)
+                warning "Invalid choice"
+                sleep 1
+                ;;
+        esac
+    done
+}
 
-echo "[+] Updating package manager..."
-apt update -y
+run_from_tui
 
-echo "[+] Installing dependencies..."
-apt install -y python3 python3-pip git wget curl android-tools
-
-echo "[+] Installing Frida and Frida Tools..."
-pip install --upgrade pip
-pip install frida frida-tools
-
-echo "[+] Creating installation directory..."
-mkdir -p $HOME/freefire-reader
-cp freefire_reader.sh $HOME/freefire-reader/
-chmod +x $HOME/freefire-reader/freefire_reader.sh
-
-echo ""
-echo -e "${GREEN}[✓] Installation complete!${NC}"
-echo ""
-echo "[+] Quick Start:"
-echo "    1. Enable USB Debugging on your phone"
-echo "    2. Run: adb devices"
-echo "    3. Install Shizuku app and activate it"
-echo "    4. Run: cd $HOME/freefire-reader"
-echo "    5. Run: ./freefire_reader.sh"
-echo ""
-echo "[+] Or add to PATH:"
-echo "    ln -s $(pwd)/freefire_reader.sh $PREFIX/bin/freefire-reader"
-echo "    Then run: freefire-reader"
-echo ""
